@@ -1,0 +1,64 @@
+<div class="container">
+  <div class="card card-groups">
+    <div class="card card-groups">
+      <select [(ngModel)]="customer">
+        <option [ngValue]="null">Brak klienta</option>
+        <option *ngFor="let c of customers" [ngValue]="c">{{c.name}}</option>
+      </select>
+    </div>
+    <div class="card-header" *ngIf="customer">
+      <h1 [style.color]="nameColor" [class.isActive]="isActive">
+        {{ customer.name + ' Siema!' }}
+        <ng-container [ngSwitch]="customer.type">
+          <ng-container *ngSwitchCase="CustomerType.Standard">*</ng-container>
+          <ng-container *ngSwitchCase="CustomerType.Premium">**</ng-container>
+          <ng-container *ngSwitchCase="CustomerType.VIP">***</ng-container>
+          <ng-container *ngSwitchDefault="">Nieznany typ</ng-container>
+        </ng-container>
+      </h1>
+
+      <div class="card-body">
+        <div class="row">
+          <div class="col-sm-8">
+            <!--<p>{{nameInput.value}}</p>-->
+            <p>{{customer.description}}</p>
+            <p appHighlight>Wiek: {{customer.age}}</p>
+            <p>Adres: {{customer.address.street}}, {{customer.address.houseNumber}}, {{customer.address.city}}</p>
+            <ul>
+              <li *ngFor="let category of customer.categories; let oddCategory = odd" [class.oddCategory]="oddCategory">{{category}} {{ oddCategory }}</li>
+              <!-- zmienna, pod którą  ||  tablica, po której będziemy iterować-->
+              <!-- będzie widać każdy  ||
+              element tablicy-->
+            </ul>
+            <button class="btn btn-primary" (click)="isActive = !isActive" type="button">Przełącz podkreślenie</button>
+            <button class="btn btn-primary" (click)="changeColor()" type="button">Zmień kolor</button>
+            <button class="btn btn-secondary" (click)="changeIsActive()" type="button">Przełącz podkreślenie</button>
+            <br/>
+            <input type="text" [value]="customer.name" (input)="customer.name = $event.target.value"/>
+            <input #nameInput type="text" [value]="customer.name" (input)="customer.name = nameInput.value"/>
+            <br/>
+            <input type="text" [(ngModel)]="customer.name" [ngModelOptions]="{updateOn: 'blur'}"/>
+            <!--wiązanie dwustronne event binding oraz property binding, blur -> lekcja 3.8 -->
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <img *ngIf="showPhoto" src="../assets/images/pattern.png"/>
+          <!--<img src='{{customer.photoUrl}}'/>-->
+          <!--<div *ngIf="showPhoto; then photo else noPhoto"></div>-->
+          <ng-container *ngIf="showPhoto; then photo else noPhoto"></ng-container>
+          <!--         jezeli true to photo, jeżeli fałsz to noPhoto-->
+          <ng-template #photo>
+            <img [src]='customer.photoUrl'/>
+            <!--property binding ^ nawiasy kwadratowe-->
+          </ng-template>
+          <ng-template #noPhoto>
+            <p>Zdjęcie ukryte</p>
+          </ng-template>
+          <div class="checkbox">
+            <label><input type="checkbox" [(ngModel)]="showPhoto">Pokaż zdjęcie</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
